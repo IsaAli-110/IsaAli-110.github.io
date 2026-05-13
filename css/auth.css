@@ -1,0 +1,263 @@
+.auth-container {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+}
+
+.auth-container .image-side {
+    flex: 1.2;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 50px;
+    justify-content: center;
+}
+
+.auth-container.register .image-side {
+    flex: 1;
+    align-items: center;
+}
+
+.auth-bg-image {
+    position: absolute;
+    top: -10%; left: -10%;
+    width: 120%; height: 120%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.1s ease-out;
+    z-index: 1;
+}
+
+.bg-login {
+    background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop');
+}
+
+.bg-register {
+    background-image: url('https://images.unsplash.com/photo-1614244788272-f6dcdfd8df9f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D.jpg');
+    filter: brightness(0.7);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+    z-index: 2;
+}
+
+.car-caption {
+    position: relative;
+    z-index: 3;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    opacity: 0;
+    animation: fadeInRight 1s forwards 1.2s;
+}
+
+.auth-container .form-side {
+    flex: 1;
+    background-color: var(--porsche-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 7%;
+    z-index: 10;
+    border-left: 1px solid #1a1a1a;
+    position: relative;
+}
+
+.auth-container.register .form-side {
+    flex: 1.2;
+    padding: 0 8%;
+}
+
+.auth-particles {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+}
+
+.logo-section {
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeInDown 1s forwards;
+    z-index: 10;
+}
+
+.logo-section h1 {
+    font-size: 24px;
+    letter-spacing: 12px;
+    margin-bottom: 5px;
+    font-weight: 900;
+}
+
+.logo-line {
+    width: 0;
+    height: 2px;
+    background-color: var(--porsche-red);
+    animation: expandLine 1s forwards 0.6s;
+}
+
+.form-side h2 {
+    font-weight: 300;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    animation-delay: 0.4s;
+    z-index: 10;
+}
+
+.auth-form {
+    z-index: 10;
+    position: relative;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px 4px 0 0;
+    transition: var(--transition-smooth);
+}
+
+.input-group:focus-within {
+    border-bottom-color: var(--porsche-white);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 10px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+}
+
+.input-group label {
+    position: absolute;
+    left: 10px; top: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.input-group input:focus ~ label,
+.input-group input:valid ~ label {
+    top: -18px;
+    left: 0;
+    font-size: 9px;
+    color: var(--porsche-red);
+}
+
+.toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+    color: #888;
+    transition: 0.3s;
+}
+
+.toggle-btn:hover { color: var(--porsche-white); }
+
+.btn-porsche {
+    width: 100%;
+    padding: 20px;
+    background: white;
+    color: black;
+    border: none;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-size: 12px;
+    margin-top: 10px;
+    z-index: 10;
+    position: relative;
+}
+
+.btn-porsche:hover {
+    background: var(--porsche-red);
+    color: white;
+    transform: scale(1.02);
+}
+
+.social-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    z-index: 10;
+    position: relative;
+}
+
+.social-btn {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    border: 1px solid #222;
+    color: white;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.social-btn:hover {
+    border-color: #555;
+    background: #111;
+}
+
+.social-btn i.fa-facebook-f { color: #1877F2; }
+.social-btn img { width: 16px; }
+
+/* Grid for Names */
+.name-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.auth-footer-text {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    z-index: 10;
+    position: relative;
+}
+
+.auth-link {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.auth-link:hover {
+    color: var(--porsche-red);
+}
+
+/* KEYFRAMES */
+@keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes expandLine { to { width: 80px; } }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 0.6; transform: translateX(0); } }
+@keyframes fadeInDown { to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) { 
+    .auth-container .image-side { display: none; } 
+    .name-grid { grid-template-columns: 1fr; gap: 0; }
+}

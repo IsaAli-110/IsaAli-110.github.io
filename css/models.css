@@ -1,0 +1,65 @@
+/* Models View Styles */
+#models-view {
+    background-color: var(--bg);
+    padding-top: 100px;
+    min-height: 100vh;
+}
+
+.models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 40px 0;
+}
+
+.model-card {
+    position: relative;
+    height: 400px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.model-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+    filter: brightness(0.7);
+}
+
+.model-card:hover img {
+    transform: scale(1.05);
+    filter: brightness(1);
+}
+
+.model-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 2;
+    transform: translateY(20px);
+    transition: var(--transition);
+}
+
+.model-card:hover .model-overlay {
+    transform: translateY(0);
+}
+
+.model-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    margin-bottom: 5px;
+}
+
+.model-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}

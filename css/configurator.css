@@ -1,0 +1,175 @@
+/* Premium Configurator View Styles */
+#configurator-view {
+    background-color: var(--bg);
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+.configurator-layout {
+    display: flex;
+    height: calc(100vh - 80px);
+}
+
+.car-display {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
+}
+
+.car-display img {
+    max-width: 90%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+}
+
+.controls-panel {
+    flex: 1;
+    background-color: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid var(--border);
+    padding: 50px 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tabs */
+.config-tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.config-tab {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.config-tab:hover {
+    color: white;
+}
+
+.config-tab.active {
+    color: white;
+    font-weight: bold;
+    border-bottom: 2px solid var(--porsche-red);
+    padding-bottom: 9px;
+}
+
+/* Tab Contents */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s forwards;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Swatches */
+.swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.swatch-item {
+    text-align: center;
+    cursor: pointer;
+}
+
+.color-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.swatch-item:hover .color-circle, .swatch-item.active .color-circle {
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.swatch-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.swatch-item.active .swatch-label {
+    color: white;
+    font-weight: bold;
+}
+
+/* Specific Colors */
+.color-carmine { background: #850012; }
+.color-gt { background: #a6abae; }
+.color-racing { background: #ffcc00; }
+.color-black { background: #0a0a0a; border: 1px solid #333; }
+
+/* Wheel & Interior Options */
+.option-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-card:hover, .option-card.active {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.option-info h4 {
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.option-price {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    color: var(--porsche-red);
+}
+
+.summary-panel {
+    margin-top: auto;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+}
+
+.price-total {
+    font-size: 36px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .configurator-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .car-display {
+        height: 50vh;
+    }
+}

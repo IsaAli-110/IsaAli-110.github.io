@@ -1,0 +1,58 @@
+:root {
+    /* Auth variables */
+    --porsche-black: #000000;
+    --porsche-white: #ffffff;
+    --porsche-red: #d5001c;
+    --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Home variables */
+    --bg: #050505;
+    --surface: #111111;
+    --accent: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.5);
+    --border: rgba(255, 255, 255, 0.1);
+    --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--porsche-black);
+    color: white;
+    font-family: 'Arial', 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* Base utility classes for revealing */
+.reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Views display control */
+.view-section {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* When a view is active */
+.view-section.active {
+    display: block; 
+}
+
+/* When auth views are active they use flex */
+#login-view.active, #register-view.active {
+    display: flex;
+}
