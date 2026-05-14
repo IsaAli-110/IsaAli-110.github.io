@@ -1,666 +1,419 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Porsche Digital Experience</title>
-
-    <!-- Favicon -->
+    <title>Porsche 911 GT3 RS | Digital Experience</title>
+    
     <link rel="icon" type="image/jpg" href="https://fabrikbrands.com/wp-content/uploads/Porsche-Logo-1-scaled.jpg">
-
-    <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&family=Orbitron:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Mengatur variabel warna & base */
+        :root {
+            --bg: #050505;
+            --surface: #111111;
+            --accent: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+            --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/auth.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/models.css">
-    <link rel="stylesheet" href="css/configurator.css">
-    <link rel="stylesheet" href="css/heritage.css">
-    <link rel="stylesheet" href="css/booking.css">
-    <link rel="stylesheet" href="css/profile.css">
+        body {
+            background-color: var(--bg);
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            width: 25px; height: 25px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease-out;
+            transform: translate(-50%, -50%);
+        }
+        /* Hide custom cursor on touch devices */
+        @media (pointer: coarse) {
+            #custom-cursor { display: none !important; }
+        }
+
+        /* Navigation (Custom Glassmorphism) */
+        nav {
+            background: linear-gradient(to bottom, rgba(54, 52, 52, 0.9), rgba(5,5,5,0));
+            backdrop-filter: blur(10px);
+        }
+        .brand { font-weight: 700; letter-spacing: 12px; font-size: 22px; cursor: default; }
+        .nav-links li { margin-left: 40px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; opacity: 0.6; transition: 0.3s; }
+        .nav-links li:hover { opacity: 1; }
+
+        /* Hero Section */
+        .hero-bg-text {
+            position: absolute;
+            font-size: 18vw;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.03);
+            z-index: -1;
+            white-space: nowrap;
+            user-select: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Spec Card */
+        .spec-card {
+            background: var(--surface);
+            padding: 40px 25px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            height: 100%;
+        }
+        .spec-card:hover { border-color: var(--accent); background: #1a1a1a; transform: translateY(-5px); }
+        .spec-card h3 { font-size: 13px; letter-spacing: 2px; margin-bottom: 15px; color: var(--text-dim); }
+        .spec-card p { font-size: 16px; line-height: 1.6; opacity: 0.7; margin: 0; }
+
+        /* HUD Item */
+        .hud-item { background: var(--surface); border: 1px solid var(--border); padding: 35px; position: relative; overflow: hidden; }
+        .hud-item::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--accent); opacity: 0.5; }
+        .hud-label { font-family: 'Orbitron'; font-size: 12px; color: var(--text-dim); margin-bottom: 10px; display: block; }
+        .hud-value { font-family: 'Orbitron'; font-size: 45px; font-weight: 700; }
+
+        /* Slider */
+        .slider-outer { 
+            width: 100%; 
+            overflow: hidden; 
+            border: 1px solid var(--border); 
+            cursor: grab;
+            position: relative;
+            background: #000;
+        }
+        .slider-outer:active { cursor: grabbing; }
+        .slider-track { 
+            display: flex; 
+            width: 400%; 
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+            will-change: transform;
+        }
+        .slider-item { width: 100%; height: 650px; overflow: hidden; }
+        .slider-item img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            pointer-events: none;
+            transition: transform 1.5s ease;
+        }
+        .slider-item:hover img { transform: scale(1.05); }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .dot {
+            width: 40px; height: 2px;
+            background: var(--border);
+            cursor: pointer;
+            transition: 0.4s;
+        }
+        .dot.active { background: var(--accent); width: 80px; }
+
+        /* Catalog Item */
+        .catalog-item { background: var(--surface); border: 1px solid var(--border); transition: var(--transition); overflow: hidden; height: 100%; }
+        .catalog-img { width: 100%; height: 300px; overflow: hidden; }
+        .catalog-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.8s; }
+        .catalog-item:hover .catalog-img img { opacity: 1; transform: scale(1.1); }
+        .catalog-info { padding: 30px; border-top: 1px solid var(--border); }
+        .catalog-info h4 { margin: 0; font-size: 1.2rem; }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        footer { border-top: 1px solid var(--border); margin-top: 100px; }
+        .footer-logo { font-weight: 700; letter-spacing: 20px; font-size: 30px; opacity: 0.05; margin-bottom: 20px; }
+
+        /* Media Queries untuk HP agar rasanya proporsional seperti di laptop */
+        @media (max-width: 1000px) {
+            .slider-item { height: 450px; }
+        }
+
+        @media (max-width: 768px) {
+            /* Navbar */
+            .brand { font-size: 18px; letter-spacing: 8px; }
+
+            /* Spec Cards */
+            .spec-card { padding: 25px 20px; }
+            .spec-card h3 { font-size: 11px; margin-bottom: 10px; }
+            .spec-card p { font-size: 14px; }
+            
+            /* HUD Items */
+            .hud-item { padding: 25px 20px; }
+            .hud-label { font-size: 10px; }
+            .hud-value { font-size: 32px; }
+
+            /* Slider */
+            .slider-item { height: 300px; }
+            .slider-dots { margin-top: 20px; }
+            .dot { width: 30px; }
+            .dot.active { width: 60px; }
+            
+            /* Catalog */
+            .catalog-img { height: 220px; }
+            .catalog-info { padding: 20px; }
+            .catalog-info h4 { font-size: 1rem; }
+            
+            /* Footer */
+            footer { margin-top: 50px; padding-top: 30px !important; padding-bottom: 30px !important; }
+            .footer-logo { font-size: 24px; letter-spacing: 12px; margin-bottom: 15px; }
+        }
+    </style>
 </head>
-
 <body>
 
-    <!-- ==================== LOGIN VIEW ==================== -->
-    <section id="login-view" class="view-section auth-container">
-        <div class="image-side">
-            <div class="auth-bg-image bg-login" id="parallaxBgLogin"></div>
-            <div class="image-overlay"></div>
-            <div class="car-caption">Porsche Engineering (ISA ALI ARRUMY 24.83.1056)</div>
+    <div id="custom-cursor"></div>
+
+    <nav class="fixed-top py-4 w-100 z-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="brand text-white">PORSCHE</div>
+            <ul class="nav-links d-none d-md-flex list-unstyled m-0">
+                <li>Models</li>
+                <li>Experience</li>
+                <li>Heritage</li>
+            </ul>
         </div>
+    </nav>
 
-        <div class="form-side">
-            <canvas class="auth-particles"></canvas>
-
-            <div class="logo-section">
-                <h1>PORSCHE</h1>
-                <div class="logo-line"></div>
-            </div>
-
-            <div class="auth-form">
-                <h2>Sign In</h2>
-
-                <form id="porscheForm">
-                    <div class="input-group reveal">
-                        <input type="text" id="login-email" required>
-                        <label>Email / Username</label>
-                    </div>
-
-                    <div class="input-group reveal" style="animation-delay: 0.1s;">
-                        <input type="password" id="login-password" required>
-                        <label>Password</label>
-                        <i class="fa-regular fa-eye toggle-btn"></i>
-                    </div>
-
-                    <button type="submit" class="btn-porsche reveal" style="animation-delay: 0.2s;">Sign In</button>
-                </form>
-
-                <div class="social-container reveal" style="animation-delay: 0.3s;">
-                    <button class="social-btn">
-                        <i class="fa-brands fa-facebook-f"></i> Facebook
-                    </button>
-                    <button class="social-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
-                            alt="Google"> Google
-                    </button>
-                </div>
-
-                <p class="auth-footer-text reveal" style="animation-delay: 0.4s;">
-                    New User? <a href="#" id="go-to-register" class="auth-link">Create Profile</a>
-                </p>
-            </div>
-        </div>
+    <section class="vh-100 d-flex flex-column justify-content-center align-items-center position-relative text-center overflow-hidden">
+        <div class="hero-bg-text">GT3 RS</div>
+        <div class="reveal visible" style="letter-spacing: 10px; font-size: 12px; opacity: 0.5;">ENGINEERED FOR THE TRACK</div>
     </section>
 
-    <!-- ==================== REGISTER VIEW ==================== -->
-    <section id="register-view" class="view-section auth-container register">
-        <div class="image-side">
-            <div class="auth-bg-image bg-register" id="parallaxBgRegister"></div>
-            <div class="image-overlay"></div>
-        </div>
-
-        <div class="form-side">
-            <canvas class="auth-particles"></canvas>
-
-            <div class="logo-section">
-                <h1>PORSCHE</h1>
-                <div class="logo-line"></div>
-            </div>
-
-            <div class="auth-form">
-                <h2>Create ID</h2>
-
-                <form id="regForm">
-                    <div class="name-grid">
-                        <div class="input-group reveal">
-                            <input type="text" required>
-                            <label>Firstname</label>
-                        </div>
-                        <div class="input-group reveal">
-                            <input type="text" required>
-                            <label>Middlename</label>
-                        </div>
-                        <div class="input-group reveal">
-                            <input type="text" required>
-                            <label>Lastname</label>
+    <div class="container py-5">
+        
+        <main class="row g-5 py-5">
+            <div class="col-lg-7">
+                <div class="row g-3 h-100 align-content-start">
+                    <div class="col-md-4 col-12">
+                        <div class="spec-card reveal">
+                            <h3>AERODYNAMICS</h3>
+                            <p>860kg downforce at 285km/h. A masterpiece of wind management.</p>
                         </div>
                     </div>
-
-                    <div class="input-group reveal" style="animation-delay: 0.1s;">
-                        <input type="text" id="reg-username" required>
-                        <label>Username (Alphanumeric min 6)</label>
+                    <div class="col-md-4 col-12">
+                        <div class="spec-card reveal">
+                            <h3>CHASSIS</h3>
+                            <p>Rear-axle steering for ultimate agility and surgical precision.</p>
+                        </div>
                     </div>
-
-                    <div class="input-group reveal" style="animation-delay: 0.2s;">
-                        <input type="email" id="reg-email" required>
-                        <label>Email Address</label>
+                    <div class="col-md-4 col-12">
+                        <div class="spec-card reveal">
+                            <h3>ENGINE</h3>
+                            <p>4.0L High-revving flat-six naturally aspirated engine.</p>
+                        </div>
                     </div>
-
-                    <div class="input-group reveal" style="animation-delay: 0.3s;">
-                        <input type="password" id="reg-password" required>
-                        <label>Password</label>
-                        <i class="fa-regular fa-eye toggle-btn"></i>
-                    </div>
-
-                    <button type="submit" class="btn-porsche reveal" style="animation-delay: 0.4s;">Sign Up</button>
-                </form>
-
-                <div class="social-container reveal" style="animation-delay: 0.5s;">
-                    <button class="social-btn"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
-                    <button class="social-btn"><img
-                            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
-                            alt="Google"> Google</button>
-                </div>
-
-                <div class="auth-footer-text reveal" style="animation-delay: 0.6s;">
-                    Have an account? <a href="#" id="go-to-login" class="auth-link">Login Now!</a><br><br>
-                    <a href="#" style="color: #444; font-weight: normal; font-size: 10px;">Forgot password? Click
-                        Here!</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== HOME VIEW ==================== -->
-    <section id="home-view" class="view-section">
-        <div id="custom-cursor"></div>
-
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"><i class="fa-solid fa-user"></i></li>
-                </ul>
-            </div>
-        </nav>
-
-        <header
-            class="vh-100 d-flex flex-column justify-content-center align-items-center position-relative text-center overflow-hidden premium-hero">
-            <!-- Infinite Marquee Background -->
-            <div class="marquee-container">
-                <div class="marquee-text">
-                    BORN IN FLACHT &bull; PORSCHE MOTORSPORT &bull; BORN IN FLACHT &bull; PORSCHE MOTORSPORT &bull;
-                </div>
-                <div class="marquee-text" aria-hidden="true">
-                    BORN IN FLACHT &bull; PORSCHE MOTORSPORT &bull; BORN IN FLACHT &bull; PORSCHE MOTORSPORT &bull;
                 </div>
             </div>
 
-            <!-- 3D Parallax Car Container -->
-            <div class="parallax-car-container z-2">
-                <img src="https://p.turbosquid.com/ts-thumb/fX/CODjlW/rv/porsche_911_gt3rs_2023_0000/jpg/1664962965/1920x1080/fit_q87/42b0c39efde6a15bcb1fb41ae6a57682b9eba567/porsche_911_gt3rs_2023_0000.jpg"
-                    alt="Porsche GT3 RS 3D" id="parallax-car" class="w-100 h-100 object-fit-contain">
-            </div>
-
-            <div class="hero-overlay z-1"></div>
-            <div class="reveal z-3 mt-5"
-                style="letter-spacing: 15px; font-size: 14px; color: var(--porsche-red); font-weight: 700; text-transform: uppercase;">
-                Engineered for the Track</div>
-        </header>
-
-        <div class="container py-5">
-            <main class="row g-5 py-5">
-                <div class="col-lg-7">
-                    <div class="row g-3 h-100 align-content-start">
-                        <div class="col-md-4 col-12">
-                            <div class="spec-card reveal">
-                                <h3>AERODYNAMICS</h3>
-                                <p>860kg downforce at 285km/h. A masterpiece of wind management.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="spec-card reveal">
-                                <h3>CHASSIS</h3>
-                                <p>Rear-axle steering for ultimate agility and surgical precision.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="spec-card reveal">
-                                <h3>ENGINE</h3>
-                                <p>4.0L High-revving flat-six naturally aspirated engine.</p>
-                            </div>
-                        </div>
+            <div class="col-lg-5">
+                <div class="d-flex flex-column gap-4">
+                    <div class="hud-item reveal">
+                        <span class="hud-label">POWER OUTPUT (PS)</span>
+                        <span class="hud-value" data-target="525">0</span>
                     </div>
-                </div>
-
-                <div class="col-lg-5">
-                    <div class="d-flex flex-column gap-4">
-                        <div class="hud-item reveal">
-                            <span class="hud-label">POWER OUTPUT (PS)</span>
-                            <span class="hud-value" data-target="525">0</span>
-                        </div>
-                        <div class="hud-item reveal">
-                            <span class="hud-label">TOP SPEED (KM/H)</span>
-                            <span class="hud-value" data-target="296">0</span>
-                        </div>
-                    </div>
-                </div>
-            </main>
-
-            <!-- Wind Tunnel Aerodynamics Visualization -->
-            <section class="wind-tunnel-section my-5 reveal">
-                <div class="text-center mb-5">
-                    <h2 style="font-weight: 300; letter-spacing: 8px; font-size: 14px; text-transform: uppercase;">
-                        Active Aerodynamics</h2>
-                    <h3 style="font-weight: 700; font-size: 28px;">WIND TUNNEL SIMULATION</h3>
-                </div>
-
-                <div class="wind-tunnel-container position-relative overflow-hidden border border-secondary border-opacity-25"
-                    style="height: 400px; background: #050505; display: flex; align-items: center; justify-content: center;">
-                    <!-- Car Silhouette -->
-                    <img src="https://media.porsche.com/porsche/image/upload/b_rgb:000000,f_auto,q_auto/c_fill,h_675,w_1200/v1/porsche-design-2023/cars/911/911-gt3-rs-2023/911-gt3-rs-2023-overview-01.png"
-                        alt="Silhouette" class="position-absolute z-2"
-                        style="width: 80%; opacity: 0.8; filter: brightness(0) invert(1) opacity(0.3);">
-
-                    <!-- Wind Lines generated via CSS -->
-                    <div class="wind-lines z-3">
-                        <div class="wind-line line-1"></div>
-                        <div class="wind-line line-2"></div>
-                        <div class="wind-line line-3"></div>
-                        <div class="wind-line line-4"></div>
-                        <div class="wind-line line-5"></div>
-                    </div>
-
-                    <!-- Glowing Rear Wing DRS Effect -->
-                    <div class="drs-glow z-2"></div>
-                </div>
-            </section>
-
-            <section class="py-5 reveal">
-                <div class="slider-outer" id="slider-outer">
-                    <div class="slider-track" id="slider-track">
-                        <div class="slider-item"><img
-                                src="https://a.storyblok.com/f/322327/1940x1320/2c42fb4bc5/cz23v20ox0009-911-gt3-rs-front.jpg/m/990x673/smart/filters:format(webp)"
-                                alt=""></div>
-                        <div class="slider-item"><img
-                                src="https://a.storyblok.com/f/322327/3840x1266/17176a3f9c/cz23v20ox0001-911-gt3-rs-rear-desktop.jpg/m/2560x822/smart/filters:format(webp)"
-                                alt=""></div>
-                        <div class="slider-item"><img
-                                src="https://images.ctfassets.net/s699s7kh1jys/1YJHeNigcmoqOd3GDRiGX5/731637d720e96ae20021d6cf367c20e4/Porsche_911_GT3_RS_cornering_racetrack_wallpaper_desktop_4.jpg"
-                                alt=""></div>
-                        <div class="slider-item"><img
-                                src="https://images.ctfassets.net/s699s7kh1jys/16XnGUOXC8LTYMLBUNFgXi/272eb946bd8f17bc19c29f052f3618b9/Porsche_911_GT3_RS_parked_pits_racetrack_wallpaper_desktop_9.jpg"
-                                alt=""></div>
-                    </div>
-                </div>
-                <div class="slider-dots">
-                    <div class="dot active"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>
-            </section>
-
-            <section class="py-5 mt-5">
-                <div class="reveal mb-4" style="border-left: 2px solid #fff; padding-left: 20px;">
-                    <h2 style="font-weight: 200; letter-spacing: 5px;" class="mb-0">THE CONFIGURATOR</h2>
-                </div>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="catalog-item reveal" style="cursor: pointer;" data-route="configurator">
-                            <div class="catalog-img"><img
-                                    src="https://images.unsplash.com/photo-1634673970798-a15ae56f6c65?fm=jpg&q=60&w=3000&auto=format"
-                                    alt=""></div>
-                            <div class="catalog-info">
-                                <h4>EXTERIOR</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="catalog-item reveal" style="cursor: pointer;" data-route="configurator">
-                            <div class="catalog-img"><img
-                                    src="https://a.storyblok.com/f/322327/3840x2160/9066d073e1/cz23v20od0006-911-gt3-rs-steering-wheel-desktop.jpg/m/2560x1440/smart/filters:format(webp)?dpl=dpl_81uxYrKMDjYb35TStcEuM4gA18vN"
-                                    alt=""></div>
-                            <div class="catalog-info">
-                                <h4>INTERIOR</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="py-5 mt-4 reveal">
-                <div class="ratio ratio-16x9 border border-secondary border-opacity-25"
-                    style="background: var(--surface);">
-                    <img src="https://media1.tenor.com/m/Hye9ouqFoWkAAAAC/porsche-992.gif" alt="GT3 RS Motion"
-                        class="w-100 h-100 object-fit-cover">
-                </div>
-            </section>
-        </div>
-
-        <footer class="py-5 text-center mt-5">
-            <div class="footer-logo">PORSCHE</div>
-            <div style="font-size: 11px; opacity: 0.3; letter-spacing: 2px;">DRIVEN BY DREAMS. © 2026 PORSCHE AG. ISA
-                ALI ARRUMY. (24.83.1056)</div>
-        </footer>
-    </section>
-
-    <!-- ==================== MODELS VIEW ==================== -->
-    <section id="models-view" class="view-section">
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"><i class="fa-solid fa-user"></i></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="container">
-            <h2 class="text-center mb-5 reveal"
-                style="font-weight: 300; letter-spacing: 10px; text-transform: uppercase;">Discover Models</h2>
-            <div class="models-grid">
-                <div class="model-card reveal" style="animation-delay: 0.1s;">
-                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
-                        alt="911">
-                    <div class="model-overlay">
-                        <div class="model-title">911</div>
-                        <div class="model-desc">Timeless Machine</div>
-                    </div>
-                </div>
-                <div class="model-card reveal" style="animation-delay: 0.2s;">
-                    <img src="https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=1974&auto=format&fit=crop"
-                        alt="Taycan">
-                    <div class="model-overlay">
-                        <div class="model-title">Taycan</div>
-                        <div class="model-desc">Soul, Electrified</div>
-                    </div>
-                </div>
-                <div class="model-card reveal" style="animation-delay: 0.3s;">
-                    <img src="https://images.unsplash.com/photo-1611821064430-0d40221e4c9c?q=80&w=2070&auto=format&fit=crop"
-                        alt="Panamera">
-                    <div class="model-overlay">
-                        <div class="model-title">Panamera</div>
-                        <div class="model-desc">Drive Changes Everything</div>
-                    </div>
-                </div>
-                <div class="model-card reveal" style="animation-delay: 0.4s;">
-                    <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1964&auto=format&fit=crop"
-                        alt="Macan">
-                    <div class="model-overlay">
-                        <div class="model-title">Macan</div>
-                        <div class="model-desc">Thrill Seeking</div>
+                    <div class="hud-item reveal">
+                        <span class="hud-label">TOP SPEED (KM/H)</span>
+                        <span class="hud-value" data-target="296">0</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </main>
 
-    <!-- ==================== CONFIGURATOR VIEW ==================== -->
-    <section id="configurator-view" class="view-section">
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"><i class="fa-solid fa-user"></i></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="configurator-layout">
-            <div class="car-display reveal">
-                <img id="config-car-img"
-                    src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=2070&auto=format&fit=crop"
-                    alt="Configured Car">
-            </div>
-            <div class="controls-panel reveal" style="animation-delay: 0.2s;">
-                <h2 style="font-weight: 300; letter-spacing: 5px; text-transform: uppercase; font-size: 14px;">Configure
-                </h2>
-                <h1 style="font-weight: 700; margin-bottom: 20px; font-size: 28px;">Porsche 911 GT3</h1>
-
-                <div class="config-tabs">
-                    <div class="config-tab active" data-tab="tab-color">Exterior</div>
-                    <div class="config-tab" data-tab="tab-wheels">Wheels</div>
-                    <div class="config-tab" data-tab="tab-interior">Interior</div>
-                </div>
-
-                <!-- Exterior Colors -->
-                <div class="tab-content active" id="tab-color">
-                    <h3>Standard Colors</h3>
-                    <div class="swatch-grid">
-                        <div class="swatch-item active" data-color="carmine" data-price="0">
-                            <div class="color-circle color-carmine"></div>
-                            <div class="swatch-label">Carmine Red</div>
-                        </div>
-                        <div class="swatch-item" data-color="gt" data-price="0">
-                            <div class="color-circle color-gt"></div>
-                            <div class="swatch-label">GT Silver</div>
-                        </div>
-                        <div class="swatch-item" data-color="racing" data-price="3270">
-                            <div class="color-circle color-racing"></div>
-                            <div class="swatch-label">Racing Yellow</div>
-                        </div>
-                        <div class="swatch-item" data-color="black" data-price="0">
-                            <div class="color-circle color-black"></div>
-                            <div class="swatch-label">Black</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Wheels -->
-                <div class="tab-content" id="tab-wheels">
-                    <h3>Wheel Options</h3>
-                    <div class="option-card wheel-option active" data-price="0">
-                        <div class="option-info">
-                            <h4>20/21-inch GT3 Wheels</h4>
-                            <span class="option-price">$ 0</span>
-                        </div>
-                    </div>
-                    <div class="option-card wheel-option" data-price="1300">
-                        <div class="option-info">
-                            <h4>20/21-inch Forged Magnesium</h4>
-                            <span class="option-price">$ 1,300</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Interior -->
-                <div class="tab-content" id="tab-interior">
-                    <h3>Interior Materials</h3>
-                    <div class="option-card int-option active" data-price="0">
-                        <div class="option-info">
-                            <h4>Standard Interior with Race-Tex</h4>
-                            <span class="option-price">$ 0</span>
-                        </div>
-                    </div>
-                    <div class="option-card int-option" data-price="4730">
-                        <div class="option-info">
-                            <h4>Leather/Race-Tex in Black/Guards Red</h4>
-                            <span class="option-price">$ 4,730</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="summary-panel">
-                    <p
-                        style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 5px;">
-                        Total Price</p>
-                    <div class="price-total" id="total-price">$ 161,100</div>
+        <section class="py-5 reveal">
+            <div class="slider-outer" id="slider-outer">
+                <div class="slider-track" id="slider-track">
+                    <div class="slider-item"><img src="https://a.storyblok.com/f/322327/1940x1320/2c42fb4bc5/cz23v20ox0009-911-gt3-rs-front.jpg/m/990x673/smart/filters:format(webp)" alt=""></div>
+                    <div class="slider-item"><img src="https://a.storyblok.com/f/322327/3840x1266/17176a3f9c/cz23v20ox0001-911-gt3-rs-rear-desktop.jpg/m/2560x822/smart/filters:format(webp)" alt=""></div>
+                    <div class="slider-item"><img src="https://images.ctfassets.net/s699s7kh1jys/1YJHeNigcmoqOd3GDRiGX5/731637d720e96ae20021d6cf367c20e4/Porsche_911_GT3_RS_cornering_racetrack_wallpaper_desktop_4.jpg" alt=""></div>
+                    <div class="slider-item"><img src="https://images.ctfassets.net/s699s7kh1jys/16XnGUOXC8LTYMLBUNFgXi/272eb946bd8f17bc19c29f052f3618b9/Porsche_911_GT3_RS_parked_pits_racetrack_wallpaper_desktop_9.jpg" alt=""></div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- ==================== HERITAGE VIEW ==================== -->
-    <section id="heritage-view" class="view-section">
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"><i class="fa-solid fa-user"></i></li>
-                </ul>
+            <div class="slider-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
-        </nav>
-        <div class="container">
-            <h2 class="text-center mb-5 reveal"
-                style="font-weight: 300; letter-spacing: 10px; text-transform: uppercase;">The Heritage</h2>
-            <div class="timeline">
-                <div class="timeline-item left reveal">
-                    <div class="timeline-content">
-                        <div class="timeline-year">1948</div>
-                        <p>Ferry Porsche builds his sports car dream: the 356 "No. 1" Roadster. The birth of the Porsche
-                            brand.</p>
+        </section>
+
+        <section class="py-5 mt-5">
+            <div class="reveal mb-4" style="border-left: 2px solid #fff; padding-left: 20px;">
+                <h2 style="font-weight: 200; letter-spacing: 5px;" class="mb-0">THE CONFIGURATOR</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="catalog-item reveal">
+                        <div class="catalog-img"><img src="https://images.unsplash.com/photo-1634673970798-a15ae56f6c65?fm=jpg&q=60&w=3000&auto=format" alt=""></div>
+                        <div class="catalog-info"><h4>EXTERIOR</h4></div>
                     </div>
                 </div>
-                <div class="timeline-item right reveal">
-                    <div class="timeline-content">
-                        <div class="timeline-year">1963</div>
-                        <p>The legendary Porsche 911 is presented at the IAA in Frankfurt. Designed by F.A. Porsche, it
-                            becomes an icon.</p>
-                    </div>
-                </div>
-                <div class="timeline-item left reveal">
-                    <div class="timeline-content">
-                        <div class="timeline-year">1986</div>
-                        <p>The Porsche 959 demonstrates what is technologically feasible, winning the Paris-Dakar Rally.
-                        </p>
-                    </div>
-                </div>
-                <div class="timeline-item right reveal">
-                    <div class="timeline-content">
-                        <div class="timeline-year">2019</div>
-                        <p>Porsche enters a new era with the Taycan, the first purely electric Porsche sports car.</p>
+                <div class="col-md-6">
+                    <div class="catalog-item reveal">
+                        <div class="catalog-img"><img src="https://a.storyblok.com/f/322327/3840x2160/9066d073e1/cz23v20od0006-911-gt3-rs-steering-wheel-desktop.jpg/m/2560x1440/smart/filters:format(webp)?dpl=dpl_81uxYrKMDjYb35TStcEuM4gA18vN" alt=""></div>
+                        <div class="catalog-info"><h4>INTERIOR</h4></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ==================== BOOKING VIEW ==================== -->
-    <section id="booking-view" class="view-section">
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"><i class="fa-solid fa-user"></i></li>
-                </ul>
+        <section class="py-5 mt-4 reveal">
+            <div class="ratio ratio-16x9 border border-secondary border-opacity-25" style="background: var(--surface);">
+                <img src="https://media1.tenor.com/m/Hye9ouqFoWkAAAAC/porsche-992.gif" alt="GT3 RS Motion" class="w-100 h-100 object-fit-cover">
             </div>
-        </nav>
-        <div class="booking-layout">
-            <div class="booking-image reveal">
-                <div class="booking-quote">
-                    <h2>"I couldn't find the sports car of my dreams, so I built it myself."</h2>
-                    <p>- Ferry Porsche</p>
-                </div>
-            </div>
-            <div class="booking-form-side reveal" style="animation-delay: 0.2s;">
-                <div class="form-header">
-                    <h1>RESERVE YOUR DRIVE</h1>
-                    <p>Experience the unyielding performance of a Porsche firsthand. Select your preferred vehicle and
-                        schedule an exclusive test drive with our concierge.</p>
-                </div>
+        </section>
 
-                <form id="testdriveForm">
-                    <div class="premium-group">
-                        <label>Select Model</label>
-                        <select class="premium-input" id="booking-model" required>
-                            <option value="" disabled selected>Choose a model...</option>
-                            <option value="911 GT3">911 GT3</option>
-                            <option value="911 Carrera S">911 Carrera S</option>
-                            <option value="Taycan Turbo">Taycan Turbo</option>
-                            <option value="Panamera GTS">Panamera GTS</option>
-                        </select>
-                    </div>
+    </div> 
 
-                    <div class="premium-group">
-                        <label>Preferred Date</label>
-                        <input type="date" class="premium-input" id="booking-date" required>
-                    </div>
-
-                    <div class="premium-group">
-                        <label>Select Time Slot</label>
-                        <div class="time-pills">
-                            <div class="time-pill">10:00 AM</div>
-                            <div class="time-pill">01:00 PM</div>
-                            <div class="time-pill">03:30 PM</div>
-                            <div class="time-pill">04:00 PM</div>
-                            <div class="time-pill">06:00 PM</div>
-                        </div>
-                    </div>
-
-                    <div class="premium-group">
-                        <label>Porsche Centre</label>
-                        <select class="premium-input" required>
-                            <option value="Jakarta">Porsche Centre Jakarta</option>
-                            <option value="Surabaya">Porsche Centre Surabaya</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-submit-booking">Confirm Appointment</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== PROFILE VIEW ==================== -->
-    <section id="profile-view" class="view-section">
-        <nav class="fixed-top py-4 w-100 z-3 porsche-nav">
-            <div class="container d-flex justify-content-between align-items-center">
-                <div class="brand text-white">PORSCHE</div>
-                <ul class="nav-links d-none d-md-flex list-unstyled m-0">
-                    <li data-route="home">Home</li>
-                    <li data-route="models">Models</li>
-                    <li data-route="configurator">Configurator</li>
-                    <li data-route="heritage">Heritage</li>
-                    <li data-route="booking">Test Drive</li>
-                    <li data-route="profile" class="ms-4 text-white"
-                        style="opacity: 1; color: var(--porsche-red) !important;"><i class="fa-solid fa-user"></i></li>
-                </ul>
-            </div>
-        </nav>
-        <div class="profile-card reveal">
-            <div class="profile-avatar" id="profile-initial">P</div>
-            <div class="profile-name" id="profile-name-display">Porsche Owner</div>
-            <div class="profile-email" id="profile-email-display">owner@porsche.com</div>
-
-            <div class="profile-stats">
-                <div class="stat-item">
-                    <h4>1</h4>
-                    <p>Saved Config</p>
-                </div>
-                <div class="stat-item">
-                    <h4>0</h4>
-                    <p>Test Drives</p>
-                </div>
-                <div class="stat-item">
-                    <h4>0</h4>
-                    <p>Vehicles</p>
-                </div>
-            </div>
-
-            <button class="btn-logout" id="btn-logout">Sign Out</button>
-        </div>
-    </section>
+    <footer class="py-5 text-center mt-5">
+        <div class="footer-logo">PORSCHE</div>
+        <div style="font-size: 11px; opacity: 0.3; letter-spacing: 2px;">DRIVEN BY DREAMS. © 2026 PORSCHE AG. ISA ALI ARRUMY. (24.83.1056)</div>
+    </footer>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Application Logic -->
-    <script src="js/Router.js"></script>
-    <script src="js/AuthView.js"></script>
-    <script src="js/HomeView.js"></script>
-    <script src="js/ModelsView.js"></script>
-    <script src="js/ConfiguratorView.js"></script>
-    <script src="js/HeritageView.js"></script>
-    <script src="js/BookingView.js"></script>
-    <script src="js/ProfileView.js"></script>
-    <script src="js/App.js"></script>
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
+        // Parallax Effect
+        window.addEventListener('scroll', () => {
+            const bgText = document.querySelector('.hero-bg-text');
+            // Menyesuaikan transform berdasarkan posisi scroll tanpa menimpa translate(-50%, -50%)
+            bgText.style.transform = `translate(calc(-50% + ${window.scrollY * 0.4}px), -50%)`;
+        });
+
+        // Intersection Observer
+        const observerOptions = { threshold: 0.2 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const counter = entry.target.querySelector('.hud-value');
+                    if (counter && !counter.dataset.animated) {
+                        animateValue(counter, 0, parseFloat(counter.getAttribute('data-target')), 2000);
+                        counter.dataset.animated = true;
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = (progress * (end - start)) + start;
+                obj.innerHTML = end % 1 === 0 ? Math.floor(val) : val.toFixed(1);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Optimized Slider Logic ---
+        const outer = document.getElementById('slider-outer');
+        const track = document.getElementById('slider-track');
+        const dots = document.querySelectorAll('.dot');
+        let isDragging = false, startX, currentTranslate = 0, prevTranslate = 0, currentIndex = 0;
+
+        // Touch & Mouse Events
+        const getPos = (e) => e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+
+        function updateSlider() {
+            track.style.transform = `translateX(${currentTranslate}px)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+        }
+
+        function setPositionByIndex() {
+            currentTranslate = currentIndex * -outer.offsetWidth;
+            prevTranslate = currentTranslate;
+            track.style.transition = 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+            updateSlider();
+        }
+
+        outer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = getPos(e);
+            track.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const currentX = getPos(e);
+            currentTranslate = prevTranslate + (currentX - startX);
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const movedBy = currentTranslate - prevTranslate;
+
+            if (movedBy < -100 && currentIndex < 3) currentIndex++;
+            else if (movedBy > 100 && currentIndex > 0) currentIndex--;
+
+            setPositionByIndex();
+        });
+
+        // Touch Support
+        outer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = getPos(e);
+            track.style.transition = 'none';
+        }, {passive: true});
+
+        outer.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentX = getPos(e);
+            currentTranslate = prevTranslate + (currentX - startX);
+            track.style.transform = `translateX(${currentTranslate}px)`;
+        }, {passive: true});
+
+        outer.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const movedBy = currentTranslate - prevTranslate;
+            if (movedBy < -100 && currentIndex < 3) currentIndex++;
+            else if (movedBy > 100 && currentIndex > 0) currentIndex--;
+            setPositionByIndex();
+        });
+
+        // Dots navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentIndex = index;
+                setPositionByIndex();
+            });
+        });
+
+        // Resize handler
+        window.addEventListener('resize', setPositionByIndex);
+
+    </script>
 </body>
-
 </html>
